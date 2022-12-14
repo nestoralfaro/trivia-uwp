@@ -1,0 +1,43 @@
+﻿<Page
+    x:Class="TriviaApp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TriviaApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    x:Name="TriviaPage"
+    >
+    <RelativePanel Margin="50">
+        <RadioButton Name="cool" Content="random" Loaded="RadioButton_Loaded"/>
+        <StackPanel x:Name="HeaderControllers" Orientation="Horizontal" RelativePanel.AlignHorizontalCenterWithPanel="True" Spacing="10">
+            <StackPanel>
+                <TextBlock x:Name="WrongNumberErrorMessage" Visibility="Collapsed" Foreground="Red" FontWeight="Bold" FontSize="16">Please enter a positive number.</TextBlock>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                    <TextBox x:Name="ManyQuestionsTextBox" PlaceholderText="Many questions" CornerRadius="7" Text="1"/>
+                    <Button x:Name="GetQuestionButton" Click="GetQuestionButton_Click" Content="Get Questions!" CornerRadius="7"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        <ListBox x:Name="QuestionListBox" RelativePanel.Below="HeaderControllers" ItemsSource="{x:Bind questionList}" CornerRadius="7" Margin="200,50,200,50">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="local:Question">
+                    <StackPanel>
+                        <TextBlock x:Name="QuestionText" Text="{x:Bind question}" FontWeight="Bold"/>
+                        <StackPanel Orientation="Horizontal">
+                            <ItemsControl x:Name="AnswerList" ItemsSource="{x:Bind answers}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:Name="AnswerDT" x:DataType="x:String">
+                                        <RadioButton Content="{Binding}" Click="Answer_Click" GroupName="{Binding ElementName=QuestionText, Path=Text}" Loaded="RadioButton_Loaded"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button x:Name="CheckAnswersButton" RelativePanel.Below="QuestionListBox" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignBottomWithPanel="True" Content="Check your answers" Click="CheckAnswersButton_Click" CornerRadius="7" Visibility="Collapsed"/>
+    </RelativePanel>
+</Page>
