@@ -1,4 +1,4 @@
-# trivia-uwp
+# Trivia App
 Simple UWP App built with the Trivia RESTful API to challenge your intelect! Architectured with the MVVM.
 
 # Demo
