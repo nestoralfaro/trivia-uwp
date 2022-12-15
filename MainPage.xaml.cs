@@ -36,7 +36,7 @@ namespace TriviaApp
 
         private async void GetQuestionButton_Click(object sender, RoutedEventArgs e)
         {
-            if (readyForChecking)
+            if (!readyForChecking)
             {
                 string input = ManyQuestionsTextBox.Text;
                 if (!Int32.TryParse(input, out int manyQuestions) || !Regex.IsMatch(input, @"^[0-9]+$"))
@@ -67,9 +67,9 @@ namespace TriviaApp
                     }
 
                     CheckAnswersButton.Visibility = Visibility.Visible;
+                    readyForChecking = true;
                 }
 
-                readyForChecking = true;
             }
         }
 
