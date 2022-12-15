@@ -4,7 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:TriviaApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local1="using:TriviaApp.ViewModels"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ViewModels="using:TriviaApp.ViewModels"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     x:Name="TriviaPage"
@@ -21,7 +22,7 @@
         </StackPanel>
         <ListBox x:Name="QuestionListBox" RelativePanel.Below="HeaderControllers" ItemsSource="{x:Bind Trivia.Questions, Mode=OneWay}" CornerRadius="7" Margin="200,50,200,50">
             <ListBox.ItemTemplate>
-                <DataTemplate x:DataType="local1:QuestionViewModel">
+                <DataTemplate x:DataType="ViewModels:QuestionViewModel">
                     <StackPanel>
                         <StackPanel>
                             <TextBlock x:Name="QuestionText" Text="{x:Bind Text, Mode=OneWay}" FontWeight="Bold"/>
@@ -31,7 +32,7 @@
                         <StackPanel Orientation="Horizontal">
                             <ItemsControl x:Name="AnswerList" ItemsSource="{x:Bind Answers, Mode=OneWay}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="local1:AnswerViewModel">
+                                    <DataTemplate x:DataType="ViewModels:AnswerViewModel">
                                         <Border Background="{x:Bind BgColor, Mode=OneWay}" CornerRadius="7" Padding="5" Margin="5" >
                                             <RadioButton Content="{x:Bind Text, Mode=OneWay}" x:Name="Answer" Click="Answer_Click" GroupName="{Binding ElementName=QuestionText, Path=Text}"/>
                                         </Border>
