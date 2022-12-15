@@ -1,29 +1,11 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using Windows.UI;
-using System.CodeDom.Compiler;
 using TriviaApp.ViewModels;
-using TriviaApp.Models;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -35,10 +17,12 @@ namespace TriviaApp
     public sealed partial class MainPage : Page
     {
         // Store the question, and the answer selected
-        private Dictionary<string, string> attempts = new Dictionary<string, string>();
+        private Dictionary<string, TaggedAnswer> attempts;
         public TriviaViewModel Trivia { get; set; }
         public QuestionViewModel Question { get; set; }
         public AnswerViewModel Answer { get; set; }
+        public ScoreViewModel Score { get; set; }
+        private bool readyForChecking = false;
 
         public MainPage()
         {
@@ -46,35 +30,78 @@ namespace TriviaApp
             Trivia = new TriviaViewModel();
             Question = new QuestionViewModel();
             Answer = new AnswerViewModel();
+            Score = new ScoreViewModel{ CorrectOnesCount=0, WrongOnesCount=0 };
+            attempts = new Dictionary<string, TaggedAnswer>();
         }
 
         private async void GetQuestionButton_Click(object sender, RoutedEventArgs e)
         {
-            string input = ManyQuestionsTextBox.Text;
-            if (!Int32.TryParse(input, out int manyQuestions) || !Regex.IsMatch(input, @"^[0-9]+$"))
+            if (readyForChecking)
             {
-                // If it was not able to parse the string or it was a negative number
-                // Show the error message
-                WrongNumberErrorMessage.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                Trivia.Questions.Clear();
-                WrongNumberErrorMessage.Visibility = Visibility.Collapsed;
-                await Trivia.FetchQuestions(manyQuestions);
-                CheckAnswersButton.Visibility = Visibility.Visible;
+                string input = ManyQuestionsTextBox.Text;
+                if (!Int32.TryParse(input, out int manyQuestions) || !Regex.IsMatch(input, @"^[0-9]+$"))
+                {
+                    // If it was not able to parse the string or it was a negative number
+                    // Show the error message
+                    WrongNumberErrorMessage.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    Trivia.Questions.Clear();
+                    WrongNumberErrorMessage.Visibility = Visibility.Collapsed;
+
+                    try
+                    {
+                        LoadingRing.IsActive = true;
+                        await Trivia.FetchQuestions(manyQuestions);
+                    }
+
+                    catch (Exception err)
+                    {
+                        Console.WriteLine($"{err} Exception caught.");
+                    }
+
+                    finally
+                    {
+                        LoadingRing.IsActive = false;
+                    }
+
+                    CheckAnswersButton.Visibility = Visibility.Visible;
+                }
+
+                readyForChecking = true;
             }
         }
 
         private void CheckAnswersButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (QuestionViewModel question in Trivia.Questions)
+            if (readyForChecking)
             {
-                foreach (AnswerViewModel answer in question.Answers)
+                foreach (QuestionViewModel question in Trivia.Questions)
                 {
-                    answer.BgColor = answer.IsCorrect ? new SolidColorBrush(Colors.LightGreen) : new SolidColorBrush(Colors.LightPink); 
+                    foreach (AnswerViewModel answer in question.Answers)
+                    {
+                        answer.BgColor = answer.IsCorrect ? new SolidColorBrush(Colors.LightGreen) : new SolidColorBrush(Colors.LightPink); 
+                    }
                 }
+
+                foreach (KeyValuePair<string, TaggedAnswer> attempt in attempts)
+                {
+                    if (attempt.Value.IsCorrect)
+                    {
+                        ++Score.CorrectOnesCount;
+                    }
+
+                    if (!attempt.Value.IsCorrect)
+                    {
+                        ++Score.WrongOnesCount;
+                    }
+                }
+
+                readyForChecking = false;
             }
+
+            ScoreBox.Visibility = Visibility.Visible;
         }
 
         private void Answer_Click(object sender, RoutedEventArgs e)
@@ -82,13 +109,24 @@ namespace TriviaApp
             RadioButton selection = sender as RadioButton;
             string question = selection.GroupName;
             string answer = selection.Content.ToString();
+            bool isCorrect = (bool)selection.Tag;
             if (question != null && answer != null)
             {
                 if (!attempts.ContainsKey(question))
                 {
-                    attempts.Add(question, answer);
+                    attempts.Add(question, new TaggedAnswer { Answered=answer, IsCorrect=isCorrect });
+                }
+                else
+                {
+                    attempts[question] = new TaggedAnswer { Answered = answer, IsCorrect = isCorrect };
                 }
             }
         }
+    }
+
+    public class TaggedAnswer
+    {
+        public string Answered { get; set; }
+        public bool IsCorrect { get; set; }
     }
 }

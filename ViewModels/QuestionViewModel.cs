@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TriviaApp.Models;
+using System.Net;
 
 namespace TriviaApp.ViewModels
 {
@@ -27,7 +23,9 @@ namespace TriviaApp.ViewModels
                 question.Text = value;
                 OnPropertyChanged("Text");
             }
-            get { return question.Text; }
+
+            // The raw response may include HTML encoded characters 
+            get { return WebUtility.HtmlDecode(question.Text); }
         }
 
         public List<AnswerViewModel> Answers
@@ -37,6 +35,7 @@ namespace TriviaApp.ViewModels
                 answers = value;
                 OnPropertyChanged("Answers");
             }
+
             get
             {
                 return answers;
@@ -50,6 +49,7 @@ namespace TriviaApp.ViewModels
                 question.Category = value;
                 OnPropertyChanged("Category");
             }
+
             get { return question.Category; }
         }
 
@@ -60,6 +60,7 @@ namespace TriviaApp.ViewModels
                 question.Difficulty = value;
                 OnPropertyChanged("Difficulty");
             }
+
             get { return question.Difficulty; }
         }
         private void OnPropertyChanged(string property)

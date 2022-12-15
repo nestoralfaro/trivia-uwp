@@ -32,6 +32,8 @@ namespace TriviaApp.ViewModels
                 {
                     Text = question.Text,
                     Answers = GetAnswerViewModels(question.Answers),
+                    Category = question.Category,
+                    Difficulty = question.Difficulty,
                 };
                 newQuestion.PropertyChanged += OnPropertyChanged;
                 Questions.Add(newQuestion);
@@ -53,6 +55,8 @@ namespace TriviaApp.ViewModels
                     {
                         Text = question.Text,
                         Answers = GetAnswerViewModels(question.Answers),
+                        Category = question.Category,
+                        Difficulty = question.Difficulty,
                     }; 
                     newQuestion.PropertyChanged += OnPropertyChanged;
                     Questions.Add(newQuestion);

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using TriviaApp.Models;
 using Windows.UI.Xaml.Media;
+using System.Net;
 
 namespace TriviaApp.ViewModels
 {
@@ -18,7 +14,8 @@ namespace TriviaApp.ViewModels
             answer = new Answer();
         }
         public string Text {
-            get { return answer.Text; }
+            // The raw response may include HTML encoded characters 
+            get { return WebUtility.HtmlDecode(answer.Text); }
 
             set
             {

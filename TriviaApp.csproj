@@ -123,11 +123,13 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Answer.cs" />
+    <Compile Include="Models\Score.cs" />
     <Compile Include="Models\Trivia.cs" />
     <Compile Include="ViewModels\AnswerViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Question.cs" />
     <Compile Include="ViewModels\QuestionViewModel.cs" />
+    <Compile Include="ViewModels\ScoreViewModel.cs" />
     <Compile Include="ViewModels\TriviaViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

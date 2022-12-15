@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
-using System.ComponentModel;
 using TriviaApp.Models;
 using Newtonsoft.Json;
 
@@ -19,20 +14,26 @@ namespace TriviaApp
         [JsonProperty(PropertyName ="category")]
         public string Category { get; set; }
 
+
         [JsonProperty(PropertyName ="difficulty")]
         public string Difficulty { get; set; }
+
 
         [JsonProperty(PropertyName ="type")]
         public string Type { get; set; }
 
+
         [JsonProperty(PropertyName ="encoding")]
         public string Encoding { get; set; }
+
 
         [JsonProperty(PropertyName ="question")]
         public string Text { get; set; }
 
+
         [JsonProperty(PropertyName ="correct_answer")]
         public string CorrectAnswer { get; set; }
+
 
         [JsonProperty(PropertyName ="incorrect_answers")]
         public List<string> IncorrectAnswers { get; set; }
